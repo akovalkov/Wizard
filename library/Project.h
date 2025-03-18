@@ -9,12 +9,17 @@ namespace json = boost::json;
 namespace Wizard
 {
     struct Module {
-        std::string name;
-        JsonTransformer transformer; // template json transformation
+        std::string name;            // template name   
+        std::filesystem::path info;  // fields template decription file (optional)
+        JsonTransformer transformer; // json transformation rules (data json => template json)
 
         void init(const json::object& jmodule)
         {
             name = jmodule.at("template").as_string().c_str();
+            info.clear();
+            if(jmodule.if_contains("info")) {
+                info = jmodule.at("info").as_string().c_str();
+            }
             transformer.init(jmodule.at("rules"));
         }
         json::value transform(const json::value& data) const
@@ -28,17 +33,18 @@ namespace Wizard
     };
 
     struct Project {
-        std::string name;
-        std::string description;
-        std::vector<Module> modules;
+        std::string name;               // project name    
+        std::string description;        // project description
+        std::filesystem::path info;     // fields template decription file for all templates (optional)
+        std::vector<Module> modules;    // templates
 
-        void render(const json::value& data, 
-                    const std::filesystem::path& infofile = "")
+        void render(const json::value& data)
         {
             Environment env;            
             for(const auto& module : modules) {
                 auto mdata = module.transform(data);
-                env.render_file(module.name, mdata, infofile);
+                auto ifile = !module.info.empty() ? module.info : info;
+                env.render_file(module.name, mdata, ifile);
             }
         }
 
@@ -61,6 +67,10 @@ namespace Wizard
         {
             name = jproject.at("name").as_string().c_str();
             description = jproject.at("description").as_string().c_str();
+            info.clear();
+            if(jproject.if_contains("info")) {
+                info = jproject.at("info").as_string().c_str();
+            }
             for(const auto& mod : jproject.at("modules").as_array()) {
                 const auto& modobj = mod.as_object();
                 Module module;

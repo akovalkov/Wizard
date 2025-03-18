@@ -1,6 +1,7 @@
 {
     "name": "WebProject",
     "description": "Test web project",
+    "info" : "info.json",
     "modules": [
         {
             "template": "DatabaseSchema",

@@ -13,6 +13,7 @@ TEST_CASE("Project load test") {
     project.init(projectFile);
     CHECK(project.name == "WebProject");
     CHECK(project.description == "Test web project");
+    CHECK(project.info == "info.json");
     CHECK(project.modules.size() == 1);
     CHECK(project.modules[0].name == "DatabaseSchema");
     std::vector<JsonTransformer::Rule> jtransform{{
