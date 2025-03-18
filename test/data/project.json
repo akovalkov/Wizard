@@ -5,10 +5,10 @@
         {
             "template": "DatabaseSchema",
             "rules": [
-                {"rules": [{"from": "name"}]},
-                {"rules": [{"from": "host"}]},
-                {"filter": "tables.id", "rules": [{"from": "tables", "to": "idtables"}] },
-                {"filter": "not tables.id", "rules": [{"from": "tables"}] }
+                {"from": "name"},
+                {"from": "host"},
+                {"from": "models", "filter": "id", "to": "idtables" },
+                {"from": "models", "filter": "not id", "to": "tables"}
             ]
         }
     ]
