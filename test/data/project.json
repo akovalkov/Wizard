@@ -1,0 +1,15 @@
+{
+    "name": "WebProject",
+    "description": "Test web project",
+    "modules": [
+        {
+            "template": "DatabaseSchema",
+            "rules": [
+                {"rules": [{"from": "name"}]},
+                {"rules": [{"from": "host"}]},
+                {"filter": "tables.id", "rules": [{"from": "tables", "to": "idtables"}] },
+                {"filter": "not tables.id", "rules": [{"from": "tables"}] }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+    "host": "localhost",
+    "name": "testdb",
+    "tables": [
+        {"name": "country", "id": true, "fields": [
+            {"name": "name", "type": "string", "required": true, "index": true, "unique": true}
+        ]},
+        {"name": "author", "id": true, "fields":[
+            {"name": "first_name", "type": "string", "required": true, "index": true},
+            {"name": "last_name", "type": "string", "required": true, "index": true},
+            {"name": "birth_date", "type": "date", "required": true, "index": true},
+            {"name": "country_id", "type": "integer", "required": true, "index": true}
+        ]},
+        {"name": "book", "id": true, "fields": [
+            {"name": "name", "type": "string", "required": true, "index": true},
+            {"name": "published", "type": "date", "required": true, "index": true}
+        ]},
+        {"name": "book_author", "id": false, "fields": [
+            {"name": "book_id", "type": "integer", "required": true, "index": true},
+            {"name": "author_id", "type": "integer", "required": true, "index": true}
+        ]}
+    ]
+}

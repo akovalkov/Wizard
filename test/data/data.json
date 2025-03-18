@@ -1,0 +1,39 @@
+{
+    "data": {
+        "project": {
+            "name" : "test",
+            "models" : [
+                {
+                    "name": "person",
+                    "fields": [
+                        {
+                            "name" : "first_name",
+                            "type" : "string",
+                            "required": true,
+                            "label": "First Name"
+                        },
+                        {
+                            "name" : "last_name",
+                            "type" : "string",
+                            "required": true,
+                            "label": "Last Name"
+                        },
+                        {
+                            "name" : "age",
+                            "type" : "integer",
+                            "required": true,
+                            "label": "Age"
+                        },
+                        {
+                            "name" : "bio",
+                            "type" : "text",
+                            "required": false,
+                            "label": "Biography"
+                        }
+                    ]
+                }
+            ]
+        } 
+    }
+}
+    

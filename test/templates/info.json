@@ -1,0 +1,94 @@
+[
+    {
+        "template": "DatabaseSchema",
+        "description": "Template for db.sql, mysql dump",
+        "variables": [
+            {
+                "name": "name",
+                "type": "string",
+                "required": true
+            },
+            {
+                "name": "host",
+                "type": "string",
+                "default": "localhost"
+            },
+            {
+                "name": "tables",
+                "type": "array"
+            }
+        ]
+    },
+    {
+        "template": "TableSchema",
+        "description": "Template for mysql table",
+        "variables": [
+            {
+                "name": "name",
+                "type": "string",
+                "required": true
+            },
+            {
+                "name": "fields",
+                "type": "array",
+                "required": true
+            }
+        ]
+    },
+    {
+        "template": "TableSchemaId",
+        "description": "Template for mysql table with id field",
+        "variables": [
+            {
+                "name": "name",
+                "type": "string",
+                "required": true
+            },
+            {
+                "name": "fields",
+                "type": "array",
+                "required": true
+            }
+        ]
+    },
+    {
+        "template": "FieldSchema",
+        "description": "Template for mysql table field description",
+        "variables": [
+            {
+                "name": "name",
+                "type": "string",
+                "required": true
+            },
+            {
+                "name": "type",
+                "type": "string",
+                "required": true
+            },
+            {
+                "name": "required",
+                "type": "bool"
+            },
+            {
+                "name": "default",
+                "type": "string"
+            },
+            {
+                "name": "enumeration",
+                "type": "string"
+            },
+            {
+                "name": "primary",
+                "type": "bool"
+            },
+            {
+                "name": "unique",
+                "type": "bool"
+            },
+            {
+                "name": "index",
+                "type": "bool"
+            }        
+        ]
+    }
+]

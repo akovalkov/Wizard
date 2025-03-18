@@ -1,0 +1,37 @@
+[
+    {
+        "template" : "DatabaseSchema",
+        "description" : "Database schema description",
+        "variables" : [
+            {
+                "name" : "host",
+                "description" : "hostname",
+                "type" : "string",
+                "required" : true,
+                "default" : "localhost"
+            },
+            {
+                "name" : "name",
+                "description" : "Database name",
+                "type" : "string",
+                "required" : true
+            },
+            {
+                "name" : "tables",
+                "description" : "Tables in free form",
+                "type" : "array",
+                "required" : false
+            },
+            {
+                "name" : "idtables",
+                "description" : "Tables with id, date_created, date_updated fields",
+                "type" : "array",
+                "required" : false
+            }
+        ],
+        "templates" : [
+            "TableSchema",
+            "TableSchemaId"
+        ]
+    }
+]
