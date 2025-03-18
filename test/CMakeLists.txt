@@ -1,4 +1,4 @@
-  project(Wizard_tests)
+  project(wizard_tests)
   CPMAddPackage(NAME  doctest
     VERSION         2.4.11
     GIT_REPOSITORY  https://github.com/doctest/doctest.git
