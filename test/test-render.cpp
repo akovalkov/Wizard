@@ -713,11 +713,11 @@ TEST_CASE("Render file structure (real)") {
         files.push_back(dir_entry.path().string());
     }
     std::vector<std::string> test_files{
-        "output-dir\\Microsoft",
-        "output-dir\\Microsoft\\Alex.tbl",
-        "output-dir\\Microsoft\\Dima.tbl",
-        "output-dir\\Microsoft\\Vitaly.tbl",
-        "output-dir\\Microsoft.txt"
+        filesystem::path::normalize_separators("output-dir\\Microsoft"),
+        filesystem::path::normalize_separators("output-dir\\Microsoft\\Alex.tbl"),
+        filesystem::path::normalize_separators("output-dir\\Microsoft\\Dima.tbl"),
+        filesystem::path::normalize_separators("output-dir\\Microsoft\\Vitaly.tbl"),
+        filesystem::path::normalize_separators("output-dir\\Microsoft.txt")
     };
     CHECK(files == test_files);
 

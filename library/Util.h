@@ -29,6 +29,24 @@ namespace Wizard {
 
 	} // namespace string_view
 
+	namespace filesystem {
+		namespace path {
+			inline std::string normalize_separators(const std::string& path) {
+				#ifdef _WIN32
+					const char from = '/';
+					const char to = '\\';
+				#else
+					const char from = '\\';
+					const char to = '/';
+				#endif
+				
+				std::string result = path;
+				std::replace(result.begin(), result.end(), from, to);
+				return result;
+			}
+		} // namespace path
+	} // namespace filesystem
+
 	inline SourceLocation get_source_location(std::string_view content, size_t pos)	{
 		// Get line and offset position (starts at 1:1)
 		auto sliced = string_view::slice(content, 0, pos);
@@ -313,7 +331,7 @@ namespace boost {
 				std::string_view part;
 				std::tie(part, ptr_name) = Wizard::string_view::split(ptr_name, '.');
 				auto size = q.size();
-				for(auto i = 0; i != size; ++i) {
+				for(auto i = 0ul; i != size; ++i) {
 					auto pvalue = q.front();
 					q.pop();
 					if(pvalue->is_array()) {
@@ -349,7 +367,7 @@ namespace boost {
 					break;
 				}
 				auto size = q.size();
-				for(auto i = 0; i != size; ++i) {
+				for(auto i = 0ul; i != size; ++i) {
 					auto pvalue = q.front();
 					q.pop();
 					if(pvalue->is_array()) {

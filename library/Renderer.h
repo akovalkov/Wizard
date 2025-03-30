@@ -153,7 +153,7 @@ namespace Wizard
                 make_result(var.defvalue);
                 return;
             }
-            // check requiired
+            // check required
             if(!data && var.required) {
                 std::string message = "The \"" + datapath + "\" variable should be set"; 
                 throw_renderer_error(message, node);
@@ -916,15 +916,17 @@ namespace Wizard
             }
             if(config.dry_run) {
                 // debug output to console
-                auto sfilename = static_cast<std::string>(filename->as_string());;
+                auto sfilename = static_cast<std::string>(filename->as_string());
                 *output_stream << ">>>>>> Start file: " << std::quoted(sfilename) << std::endl;
                 node.body.accept(*this);
                 *output_stream << "<<<<<< End file: " << std::quoted(sfilename) << std::endl;
                 return;
             }
             // real work
+            // normalize path according OS (directory separator)
+            std::filesystem::path pfilename = filesystem::path::normalize_separators(static_cast<std::string>(filename->as_string())); 
             std::filesystem::path filepath = config.output_dir;
-            filepath /= static_cast<std::string>(filename->as_string());
+            filepath /= pfilename;
 
             if(!std::filesystem::exists(filepath.parent_path()) && 
                !std::filesystem::create_directories(filepath.parent_path())) {
@@ -965,7 +967,7 @@ namespace Wizard
                     auto& subarr = subdata.get_array();
                     loop_data["is_first"] = true;
                     loop_data["is_last"] = subarr.size() <= 1;
-                    for(auto i = 0; i != subarr.size(); ++i) {
+                    for(auto i = 0ul; i != subarr.size(); ++i) {
                         loop_data["index"] = i;
                         loop_data["index1"] = i + 1;
                         if (i == 1) {
@@ -1017,6 +1019,8 @@ namespace Wizard
                         return json::value(json::array_kind);
                     case Variable::Type::Object:
                         return json::value(json::object_kind);
+                    case Variable::Type::Null:
+                        return {};
                     }
                 }
                 break;
@@ -1041,6 +1045,8 @@ namespace Wizard
                             std::string message = "Cannot convert bool value to object";
                             throw BaseError("data_error", message);
                         }
+                    case Variable::Type::Null:
+                        return {};
                     }
                 }
                 break;
@@ -1062,6 +1068,8 @@ namespace Wizard
                             std::string message = "Cannot convert int value to object";
                             throw BaseError("data_error", message);
                         }
+                    case Variable::Type::Null:
+                        return {};
                     }
                 }
                 break;
@@ -1083,6 +1091,8 @@ namespace Wizard
                             std::string message = "Cannot convert unsigned int value to object";
                             throw BaseError("data_error", message);
                         }
+                    case Variable::Type::Null:
+                        return {};
                     }
                 }
                 break;
@@ -1106,6 +1116,8 @@ namespace Wizard
                             std::string message = "Cannot convert unsigned int value to object";
                             throw BaseError("data_error", message);
                         }
+                    case Variable::Type::Null:
+                        return {};
                     }
                 }
                 break;
@@ -1127,6 +1139,8 @@ namespace Wizard
                             std::string message = "Cannot convert string value to object";
                             throw BaseError("data_error", message);
                         }
+                    case Variable::Type::Null:
+                        return {};
                     }
                 }
                 break;
@@ -1164,6 +1178,8 @@ namespace Wizard
                             std::string message = "Cannot convert array value to object";
                             throw BaseError("data_error", message);
                         }
+                    case Variable::Type::Null:
+                        return {};
                     }
                 }
                 break;
@@ -1201,6 +1217,8 @@ namespace Wizard
                         return json::value({{obj}});
                     case Variable::Type::Object:
                         return obj;
+                    case Variable::Type::Null:
+                        return {};
                     }
                 }
                 break;
