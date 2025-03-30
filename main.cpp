@@ -175,32 +175,70 @@ int create_template_description(Wizard::Environment& env,
 
 // check data by template description
 
-// render template
-int render_template(Wizard::Environment& env,
-				    const std::filesystem::path& filetpl,
-				    const std::filesystem::path& fileinfo,
-					const std::filesystem::path& filedata)
+// read and parse json file
+int read_json(const std::filesystem::path& fdata, json::value& data)
 {
 	// read json data
 	std::ifstream jsonfile;
-	jsonfile.open(filedata);
+	jsonfile.open(fdata);
 	if(jsonfile.fail()) {
-		std::cerr << "Couldn't open JSON data file: " << std::quoted(filedata.string()) <<  std::endl;
+		std::cerr << "Couldn't open JSON data file: " << std::quoted(fdata.string()) <<  std::endl;
 		return 1;		
 	}
 	// parse json
 	std::error_code ec;
-	json::value data = json::parse(jsonfile, ec);
+	data = json::parse(jsonfile, ec);
 	if(ec) {
-		std::cerr << ec.message()<<  std::endl;
+		std::cerr << ec.message() << std::endl;
 		return 1;		
+	}
+	return 0;
+}
+
+// render template
+int render_template(Wizard::Environment& env,
+				    const std::filesystem::path& ftpl,
+				    const std::filesystem::path& finfo,
+					const std::filesystem::path& fdata)
+{
+	// read json data
+	json::value data;
+	if(read_json(fdata, data)) {
+		return 1;
 	}
 	try{
 		// set templates directory (search nested templates)
-		std::filesystem::path tpldir = filetpl.parent_path();
+		std::filesystem::path tpldir = ftpl.parent_path();
 		env.set_template_directory(tpldir);
 		// render template
-		auto result = env.render_file(filetpl.filename(), data, fileinfo);
+		auto result = env.render_file(ftpl.filename(), data, finfo);
+		// output render result if the dry run is set
+		if(env.is_dry_run()) {
+			std::cout << result << std::endl;
+		}
+	} catch(Wizard::BaseError& err) {
+		std::cerr << err.what() <<  std::endl;
+		return 1;		
+	}
+	return 0;
+}
+
+// render project
+int render_project(Wizard::Environment& env,
+				   const std::filesystem::path& fproject,
+				   const std::filesystem::path& finfo,
+				   const std::filesystem::path& fdata)
+{
+	// read json data
+	json::value data;
+	if(read_json(fdata, data)) {
+		return 1;
+	}
+	try{
+		Wizard::Project project;
+		project.init(fproject);
+		// render template
+		auto result = project.render(env, data, finfo);
 		// output render result if the dry run is set
 		if(env.is_dry_run()) {
 			std::cout << result << std::endl;
@@ -221,45 +259,48 @@ int main(int argc, const char* argv[])
 	po::options_description desc("Allowed options");
 	desc.add_options()
 		("help", "produce help message")
-		("file,f", po::value<std::string>(), "input template file")
+		("template,t", po::value<std::string>(), "input template file")
 		("data,d", po::value<std::string>(), "input JSON data file")
 		("info,i", po::value<std::string>()->implicit_value(""), "template description (from json file)")
 		("create-info,c", po::value<std::string>()->implicit_value(""), "create/update template description (into json file)")
 		("output,o", po::value<std::string>(), "output directory")
+		("project,p", po::value<std::string>(), "input project file")
 		;
 
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc, argv, desc), vm);
 	po::notify(vm);
 
-	if (vm.count("help") || !vm.count("file")) {
+	if (vm.count("help") || !vm.count("template") || !vm.count("project")) {
 		std::cerr << desc << std::endl;
 		return 1;
 	}
 	// template file
-	std::filesystem::path filetpl = vm["file"].as<std::string>();
 	Wizard::Environment env;
-	// show template info
-	if(vm.count("info") && !vm.count("data")) {
-		std::filesystem::path infodat = vm["info"].as<std::string>();
-		try{
-			template_description(env, filetpl, infodat);
-		} catch(Wizard::BaseError& err) {
-			std::cerr << err.what() <<  std::endl;
-			return 1;		
+	if(vm.count("template")) {
+		std::filesystem::path filetpl = vm["template"].as<std::string>();
+		// show template info
+		if(vm.count("info") && !vm.count("data")) {
+			std::filesystem::path infodat = vm["info"].as<std::string>();
+			try{
+				template_description(env, filetpl, infodat);
+			} catch(Wizard::BaseError& err) {
+				std::cerr << err.what() <<  std::endl;
+				return 1;		
+			}
+			return 0;
 		}
-		return 0;
-	}
-	// create template info
-	if(vm.count("create-info")) {
-		std::filesystem::path infodat = vm["create-info"].as<std::string>();
-		try{
-			create_template_description(env, filetpl, infodat);
-		} catch(Wizard::BaseError& err) {
-			std::cerr << err.what() <<  std::endl;
-			return 1;		
+		// create template info
+		if(vm.count("create-info")) {
+			std::filesystem::path infodat = vm["create-info"].as<std::string>();
+			try{
+				create_template_description(env, filetpl, infodat);
+			} catch(Wizard::BaseError& err) {
+				std::cerr << err.what() <<  std::endl;
+				return 1;		
+			}
+			return 0;
 		}
-		return 0;
 	}
 	// json data file
 	if(!vm.count("data")) {
@@ -269,8 +310,9 @@ int main(int argc, const char* argv[])
 	}
 	// render template
 	std::filesystem::path infodat;
-	if(vm.count("info"))
-	 	infodat = vm["info"].as<std::string>();
+	if (vm.count("info")) {
+		infodat = vm["info"].as<std::string>();
+	}
 	std::filesystem::path filedata = vm["data"].as<std::string>();
 	if(vm.count("output")) {
 		std::filesystem::path outputdir = vm["output"].as<std::string>();
@@ -278,5 +320,14 @@ int main(int argc, const char* argv[])
 	} else {
 		env.set_dry_run(true); // test rendering
 	}
-    return render_template(env, filetpl, infodat, filedata);
+	if(vm.count("template")) {
+		// render template
+		std::filesystem::path filetpl = vm["template"].as<std::string>();
+		return render_template(env, filetpl, infodat, filedata);
+	} else if(vm.count("project")) {
+		// render project
+		std::filesystem::path project = vm["project"].as<std::string>();
+		return render_project(env, project, infodat, filedata);
+	}
+	return 0;
 }

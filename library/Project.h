@@ -22,6 +22,7 @@ namespace Wizard
             }
             transformer.init(jmodule.at("rules"));
         }
+
         json::value transform(const json::value& data) const
         {
             if(transformer.rules().empty()) {
@@ -38,14 +39,16 @@ namespace Wizard
         std::filesystem::path info;     // fields template decription file for all templates (optional)
         std::vector<Module> modules;    // templates
 
-        void render(const json::value& data)
+        std::string render(Environment& env, const json::value& data, 
+                           const std::filesystem::path& infofile = "")
         {
-            Environment env;            
+            std::string result;
             for(const auto& module : modules) {
                 auto mdata = module.transform(data);
-                auto ifile = !module.info.empty() ? module.info : info;
-                env.render_file(module.name, mdata, ifile);
+                auto ifile = !infofile.empty() ? infofile : (!module.info.empty() ? module.info : info);
+                result += env.render_file(module.name, mdata, ifile);
             }
+            return result;
         }
 
         void init(const std::filesystem::path& path)

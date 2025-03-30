@@ -26,11 +26,11 @@ namespace Wizard
             Object
         };
         std::string name;
-        std::string description;
+        std::string description{};
         Type type{Type::Null};
         bool required{true};
-        json::value defvalue;
-        Variables variables;
+        json::value defvalue{};
+        Variables variables{};
         bool operator==(const Variable &) const = default;
     };
 
@@ -148,7 +148,7 @@ namespace Wizard
 
     protected:        
 
-        static auto split_path(std::string_view ptr_name) 
+        static std::vector<std::string> split_path(std::string_view ptr_name) 
         {
             std::vector<std::string> parts;
             do {
