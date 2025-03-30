@@ -188,6 +188,8 @@ namespace Wizard
                 return FunctionStorage::Operation::Modulo;
             // case Token::Kind::Dot:
             //     return FunctionStorage::Operation::AtId;
+            default:
+                break;
             }
             throw_parser_error("unknown operator in parser.", state);
             return  FunctionStorage::Operation::None;
