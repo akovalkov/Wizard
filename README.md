@@ -3,12 +3,22 @@ Another template code generator
 
 ## Build 
 Build commands:
+Windows
 ```
 cmake -S . -B build
-cmake --build  build --config Release
-cmake --build  build --config Debug
+cmake --build build --config Release
+cmake --build build --config Debug
 ```
-
+Linux
+```
+cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug
+cmake -S . -B build -D CMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+Tests
+```
+./build/test/wizard_tests --test-dir ./test/
+```
 ## Template
 Template syntax based on [Inja](https://github.com/pantor/inja) but with few changes.
 The template inheritance (the "extends" and "block" statements) was removed
