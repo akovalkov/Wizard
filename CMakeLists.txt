@@ -29,6 +29,5 @@ CPMAddPackage(
 target_link_libraries(${PROJECT_NAME} Boost::program_options Boost::json)
 
 if(BUILD_TESTING)
-  
-add_subdirectory(test)
+  add_subdirectory(test)
 endif()

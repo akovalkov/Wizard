@@ -2,7 +2,7 @@
 Another template code generator 
 
 ## Build 
-Build commands:
+Build commands: 
 Windows
 ```
 cmake -S . -B build
