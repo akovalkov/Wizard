@@ -618,7 +618,7 @@ namespace Wizard
                     if(!args[0]->is_array()) {
                         throw_renderer_error("the 'first' function works only with array", node);
                     }
-                    const auto result = args[0]->get_array().front();
+                    const auto& result = args[0]->get_array().front();
                     data_eval_stack.push(&result);
                 }
                 break;
@@ -640,7 +640,7 @@ namespace Wizard
                     if(!args[0]->is_array()) {
                         throw_renderer_error("the 'last' function works only with array", node);
                     }
-                    const auto result = args[0]->get_array().back();
+                    const auto& result = args[0]->get_array().back();
                     data_eval_stack.push(&result);
                 }
                 break;
