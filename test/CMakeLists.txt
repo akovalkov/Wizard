@@ -15,7 +15,8 @@
   if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /permissive-)
   else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -fsanitize=address)
+    target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address)
   endif()
 
   target_link_libraries(${PROJECT_NAME} doctest::doctest Boost::json)
