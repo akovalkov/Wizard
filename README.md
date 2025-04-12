@@ -2,7 +2,8 @@
 Another template code generator 
 
 ## Build 
-Build commands: 
+Build commands:
+
 Windows
 ```
 cmake -S . -B build
@@ -25,7 +26,7 @@ The template inheritance (the "extends" and "block" statements) was removed
 The following new tags were added:
 ### The file statement
 Redirect the generator output to file
-```
+```cpp
 ## file <output-path:expression>
 ... some output ... 
 ## endfile
@@ -34,12 +35,12 @@ The file statements can't be nested
 
 ### The apply-template statement
 Process nested template with specified json data
-```
+```cpp
 ## apply-template <template-name:string> <json field path:string>
 ```
 ## Template field constraints (optional)
 Template fields may have strong typization through template description file
-```
+```json
 {
     "template": "DatabaseSchema",
     "description": "Template for db.sql, mysql dump",
@@ -62,6 +63,19 @@ Template fields may have strong typization through template description file
 }
 ```
 The wizard will be check json field type and its presence during generation process. It helps for early error data type detection.
+
+The template variable may be described the following json object:
+```json
+    {
+        "name": "name in template", // (required)
+        "description": "some description", // (optional)
+        "type": ["bool", "integer", "double", "string", "array", "object"], // (required)
+        "default": "default value of specified type", // (optional)
+        "required": [true, false], // false by default (optional)
+        "variables": {...} // sub fields description if type is object (optional)
+    }
+
+```
 ## Project (optional)
 The project file allow to combine processing few templates using one source json data file
 
