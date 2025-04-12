@@ -19,14 +19,31 @@ namespace Wizard {
 			return view.substr(start, end - start);
 		}
 
-		inline std::pair<std::string_view, std::string_view> split(std::string_view view, char Separator) {
-			size_t idx = view.find(Separator);
+		inline std::pair<std::string_view, std::string_view> split(std::string_view view, char separator) {
+			size_t idx = view.find(separator);
 			if (idx == std::string_view::npos) {
 				return std::make_pair(view, std::string_view());
 			}
 			return std::make_pair(slice(view, 0, idx), slice(view, idx + 1, std::string_view::npos));
 		}
 
+		inline std::vector<std::string> split(const std::string& str, const std::string& delimiters) {
+			std::vector<std::string> tokens;
+			size_t start = 0;
+			size_t end = str.find_first_of(delimiters);
+			while (end != std::string::npos) {
+				if (end != start) { // Avoid empty tokens if delimiters are consecutive
+					tokens.push_back(str.substr(start, end - start));
+				}
+				start = end + 1;
+				end = str.find_first_of(delimiters, start);
+			}
+			// Add the last token
+			if (start < str.length()) {
+				tokens.push_back(str.substr(start));
+			}
+			return tokens;
+		}		
 	} // namespace string_view
 
 	namespace filesystem {

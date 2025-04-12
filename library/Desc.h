@@ -35,7 +35,7 @@ namespace Wizard
     };
 
     using Variables = std::map<std::string, Variable>;
-    using Templates = std::set<std::string>;
+    using Templates = std::set<std::filesystem::path>;
 
     struct Description
     {
@@ -94,7 +94,7 @@ namespace Wizard
             if(!nested.empty()) {
                 obj["templates"] = json::value(json::array_kind);
                 for(const auto& tpl_name : nested) {
-                    obj["templates"].as_array().emplace_back(tpl_name);
+                    obj["templates"].as_array().emplace_back(tpl_name.string());
                 }
             }
             return obj;

@@ -31,7 +31,7 @@ TEST_CASE("Lexer empty") {
 TEST_CASE("Lexer DatabaseSchema.tpl") {
     
     auto filepath = fixture.templatesDir;
-    filepath /= "DatabaseSchema.tpl";
+    filepath /= "sql/DatabaseSchema.tpl";
     std::string str = read_file(filepath);
 
     std::vector<Token> test_tokens{
@@ -124,7 +124,7 @@ TEST_CASE("Parser DatabaseSchema.tpl") {
     lconfig.templates_dir = fixture.templatesDir;
 
     Parser parser(pconfig, lconfig, templates, functions);
-    std::filesystem::path template_name = "DatabaseSchema.tpl";
+    std::filesystem::path template_name = "sql/DatabaseSchema.tpl";
     Template root = parser.parse_file(template_name);
     TestVisitor rootVisitor;
     rootVisitor.process(root);
@@ -379,7 +379,7 @@ TEST_CASE("Parser DatabaseSchema.tpl (with comments)") {
     lconfig.templates_dir = fixture.templatesDir;
     pconfig.keep_comments = true; // add comments in result AST
     Parser parser(pconfig, lconfig, templates, functions);
-    std::filesystem::path template_name = "DatabaseSchema.tpl";
+    std::filesystem::path template_name = "sql\\DatabaseSchema.tpl";
     Template root = parser.parse_file(template_name);
     TestVisitor rootVisitor;
     rootVisitor.process(root);

@@ -772,7 +772,7 @@ TEST_CASE("Render apply template") {
 
     lconfig.templates_dir = fixture.templatesDir;
     Parser parser(pconfig, lconfig, templates, functions);
-    std::filesystem::path template_name = "DatabaseSchema.tpl";
+    std::filesystem::path template_name = "sql\\DatabaseSchema.tpl";
 	Template tpl = parser.parse_file(template_name);
 
 	RenderConfig rconfig;

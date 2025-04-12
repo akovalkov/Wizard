@@ -157,7 +157,7 @@ int create_template_description(Wizard::Environment& env,
 	// nested templates
 	template_obj["templates"] = json::value(json::array_kind);
 	for(const auto& tpl_name : new_desc.nested) {
-		template_obj["templates"].as_array().push_back(tpl_name.c_str());
+		template_obj["templates"].as_array().push_back(tpl_name.string().c_str());
 	}
 	if(is_new) {
 		old_desc.as_array().push_back(template_obj);

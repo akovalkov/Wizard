@@ -219,7 +219,7 @@ namespace Wizard {
 					break;
 				}
 				const char ch = state.m_in[state.pos];
-				if (!std::isalnum(ch) && ch != '.' && ch != '/' && ch != '_' && ch != '-') {
+				if (!std::isalnum(ch) && ch != '.' && ch != '\\' && ch != '/' && ch != '_' && ch != '-') {
 					break;
 				}
 				state.pos += 1;

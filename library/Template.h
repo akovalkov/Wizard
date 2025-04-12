@@ -31,6 +31,6 @@ namespace Wizard
         }
     };
 
-    using TemplateStorage = std::map<std::string, Template>;
+    using TemplateStorage = std::map<std::filesystem::path, Template>;
 
 } // namespace Wizard

@@ -992,7 +992,7 @@ namespace Wizard
                     sub_renderer.render(*output_stream, template_it->second, subdata, &additional_data);
                 }
             } else if (config.throw_at_missing_includes) {
-                throw_renderer_error("apply template '" + node.template_name + "' not found", node);
+                throw_renderer_error("apply template '" + node.template_name.string() + "' not found", node);
             }
         }
 

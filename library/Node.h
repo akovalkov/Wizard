@@ -305,11 +305,11 @@ namespace Wizard
     class ApplyTemplateStatementNode : public StatementNode
     {
     public:
-        const std::string template_name;
+        const std::filesystem::path template_name;
         const std::string field_name;
         const std::string field_path;
 
-        explicit ApplyTemplateStatementNode(const std::string& name, const std::string& field, size_t pos) 
+        explicit ApplyTemplateStatementNode(const std::filesystem::path& name, const std::string& field, size_t pos) 
                                         : StatementNode(pos), template_name(name), field_name(field),
                                             field_path(convert_dot_to_ptr(field)) {}
 

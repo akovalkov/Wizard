@@ -209,13 +209,33 @@ namespace Wizard
             return operator_node;
         }
 
+        std::filesystem::path normalize_template_name(const std::filesystem::path& parent, std::string full_template_name, ParserState& state)
+        {
+            auto dirs = string_view::split(full_template_name, "\\/");
+            if(dirs.empty()) {
+                throw_parser_error("empty template name.", state);
+            }
+            auto template_name = dirs.back();
+            dirs.pop_back();
 
-        void add_to_template_storage(std::string template_name)
+            std::filesystem::path template_path;
+            if(dirs.empty()) {
+                template_path = parent.parent_path();
+            } else {
+                for(const auto& dir : dirs) {
+                    template_path /= dir;        
+                }
+            }
+            template_path /= template_name;
+            return template_path;
+        }
+
+        void add_to_template_storage(const std::filesystem::path& template_name)
         {
             if (template_storage.find(template_name) != template_storage.end()) {
                 return;
             }
-            std::filesystem::path template_path = template_name + ".tpl";
+            std::filesystem::path template_path = template_name.string() + ".tpl";
             if (pconfig.parse_nested_template) {
                 // Parse sub template
                 auto sub_parser = Parser(pconfig, lconfig, template_storage, function_storage);
@@ -224,7 +244,7 @@ namespace Wizard
             }
             // Try include callback
             if(pconfig.include_callback) {
-                auto include_template = pconfig.include_callback(template_path, template_name);
+                auto include_template = pconfig.include_callback(template_path, template_name.string());
                 template_storage.emplace(template_name, include_template);
             }
         }
@@ -244,8 +264,7 @@ namespace Wizard
             Arguments arguments; // arguments for operators
             Token literal_start; // start literal (can be json)
 
-            while (state.tok.kind != Token::Kind::Eof)
-            {
+            while (state.tok.kind != Token::Kind::Eof){
                 // Literals
                 switch (state.tok.kind)
                 {
@@ -542,7 +561,7 @@ namespace Wizard
             return true;
         }
 
-        bool parse_apply_template_statement(ParserState& state) {
+        bool parse_apply_template_statement(ParserState& state, Template &tmpl) {
             // skip current token (keyword "apply-template")
             state.get_next_token();
             // template name
@@ -558,12 +577,13 @@ namespace Wizard
             auto field = state.tok.text;
 
             // create apply-template 
-            state.current_block->nodes.emplace_back(std::make_shared<ApplyTemplateStatementNode>(static_cast<std::string>(name), 
+            auto template_name = normalize_template_name(tmpl.path, static_cast<std::string>(name), state);
+            state.current_block->nodes.emplace_back(std::make_shared<ApplyTemplateStatementNode>(template_name, 
                                                                                                  static_cast<std::string>(field),
                                                                                                  state.tok.offset));
             state.get_next_token();
             // add template (parse it)
-            add_to_template_storage(static_cast<std::string>(name));
+            add_to_template_storage(template_name);
             return true;
         }
 
@@ -610,7 +630,7 @@ namespace Wizard
             } else if (state.tok.text == "endfile") {
                 return parse_endfile_statement(state);
             } else if (state.tok.text == "apply-template") {
-                return parse_apply_template_statement(state);
+                return parse_apply_template_statement(state, tmpl);
             } else if (state.tok.text == "set") {
                 return parse_set_statement(state, tmpl, closing);
             }
