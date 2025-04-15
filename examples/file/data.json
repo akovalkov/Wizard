@@ -1,0 +1,16 @@
+{
+    "companies" : [ 
+        {
+            "name": "Microsoft",
+            "persons": ["Alex", "Dima", "Vitaly"]
+        },
+        {
+            "name": "Google",
+            "persons": ["Olga", "Alan"]
+        },
+        {
+            "name": "IBM",
+            "persons": ["Jonh", "Alan"]
+        }
+    ]
+}
