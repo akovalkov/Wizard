@@ -214,7 +214,7 @@ int render_template(Wizard::Environment& env,
 		auto result = env.render_file(ftpl.filename(), data, finfo);
 		// output render result if the dry run is set
 		if(env.is_dry_run()) {
-			std::cout << result << std::endl;
+			std::cout << result;
 		}
 	} catch(Wizard::BaseError& err) {
 		std::cerr << err.what() <<  std::endl;
@@ -271,7 +271,7 @@ int main(int argc, const char* argv[])
 	po::store(po::parse_command_line(argc, argv, desc), vm);
 	po::notify(vm);
 
-	if (vm.count("help") || !vm.count("template") || !vm.count("project")) {
+	if (vm.count("help") || (!vm.count("template") && !vm.count("project"))) {
 		std::cerr << desc << std::endl;
 		return 1;
 	}
