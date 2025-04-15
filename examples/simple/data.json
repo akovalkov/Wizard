@@ -1,0 +1,14 @@
+{
+    "title": "Information",
+    "page": 42,
+    "salary": 12.34,
+    "person": {
+        "name": "Alex",
+        "age": 90,
+        "address": {
+            "country": "Georgia",
+            "city": "Kutaisi",
+            "zipcode": 123456
+        }
+    }
+}
